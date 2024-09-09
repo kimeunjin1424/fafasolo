@@ -33,7 +33,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addToBlock, addToSave } from '../slices/userSlice'
 
 const screenWidth = Dimensions.get('screen').width
-export const tinderCardWidth = screenWidth * 0.9
+const screenHeight = Dimensions.get('screen').height
+export const tinderCardWidth = screenWidth * 0.85
+export const tinderCardHeight = screenHeight * 0.7
 
 const TinderCard = ({
   user,
@@ -479,7 +481,7 @@ const TinderCard = ({
                     style={{
                       fontFamily: 'Se-Hwa',
                       color: 'pink',
-                      fontSize: 30,
+                      fontSize: 35,
                     }}
                   >
                     확인
@@ -504,7 +506,7 @@ const TinderCard = ({
                     style={{
                       fontFamily: 'Se-Hwa',
                       color: 'white',
-                      fontSize: 30,
+                      fontSize: 35,
                     }}
                   >
                     취소
@@ -522,6 +524,7 @@ const TinderCard = ({
 const styles = StyleSheet.create({
   card: {
     width: tinderCardWidth,
+    height: tinderCardHeight,
     // height: tinderCardWidth * 1.67,
     aspectRatio: 1 / 1.67,
     borderRadius: 15,

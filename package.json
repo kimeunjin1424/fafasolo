@@ -39,6 +39,7 @@
     "react-native-emoji-selector": "^0.2.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-iap": "^12.15.2",
+    "react-native-infinite-wheel-picker": "^1.0.0",
     "react-native-input-scroll-view": "^1.11.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-loading-spinner-overlay": "^3.0.1",

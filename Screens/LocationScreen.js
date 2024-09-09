@@ -9,6 +9,8 @@ import {
   Animated,
   TextInput,
   ScrollView,
+  ActivityIndicator,
+  Modal,
 } from 'react-native'
 import React, { useState, useEffect } from 'react'
 //import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
@@ -29,6 +31,9 @@ const LocationScreen = () => {
   const [location, setLocation] = useState('')
   const [errorMsg, setErrorMsg] = useState(null)
   const [region, setRegion] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [verifyLocation, setIsVerifyLoocation] = useState(false)
+  const [verify, setVerify] = useState(false)
 
   const regionData = [
     { id: 1, name: '서울' },
@@ -189,6 +194,7 @@ const LocationScreen = () => {
                 uri: 'https://cdn-icons-png.flaticon.com/128/10613/10613685.png',
               }}
             />
+            {address ? null : <ActivityIndicator size="large" color="red" />}
           </View>
           <View>
             <Text style={{ color: 'gray' }}>위치가 Denied로 나오시는 분은</Text>
@@ -290,13 +296,16 @@ const LocationScreen = () => {
                   paddingHorizontal: 3,
                   paddingVertical: 7,
                   borderRadius: 30,
-                  gap:3,
+                  gap: 3,
                   backgroundColor: region === r.name ? '#581845' : 'white',
                 }}
                 onPress={() => setRegion(r.name)}
               >
                 <Text
-                  style={{ color: region === r.name ? 'white' : '#581845', fontSize:20 }}
+                  style={{
+                    color: region === r.name ? 'white' : '#581845',
+                    fontSize: 20,
+                  }}
                 >
                   {r.name}
                 </Text>
@@ -304,6 +313,22 @@ const LocationScreen = () => {
             ))}
           </View>
           {region && location ? (
+            <TouchableOpacity
+              style={{ marginTop: 20, backgroundColor: 'gray', padding:3, borderRadius:15 }}
+              onPress={() => setIsVerifyLoocation(true)}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: 'white',
+                  textAlign: 'center',
+                }}
+              >
+                위치 사용 관련 확인 및 동의하기
+              </Text>
+            </TouchableOpacity>
+          ) : null}
+          {verify == true && (
             <TouchableOpacity
               onPress={handleNext}
               style={{ marginTop: -5, marginLeft: 'auto' }}
@@ -315,9 +340,127 @@ const LocationScreen = () => {
                 style={{ alignSelf: 'center', marginTop: 20 }}
               />
             </TouchableOpacity>
-          ) : null}
+          )}
         </View>
       </SafeAreaView>
+      <Modal
+        visible={verifyLocation}
+        onTouchOutside={() => {
+          setIsVerifyLoocation(false)
+        }}
+        animationType="fade"
+        transparent={true}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 22,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: 'white',
+              margin: 10,
+              borderRadius: 20,
+              padding: 15,
+              alignItems: 'center',
+              shadowColor: 'white',
+              shadowOffset: {
+                width: 0,
+                height: 5,
+              },
+              shadowOpacity: 0.55,
+              shadowRadius: 4,
+              elevation: 5,
+            }}
+          >
+            <View style={{ borderBottomWidth: 1, borderColor: 'gray' }}>
+              <Text
+                style={{
+                  marginTop: 5,
+                  fontSize: 25,
+                  color: 'black',
+                  fontFamily: 'Se-Hwa',
+                }}
+              >
+                위치 사용 관련 안내 및 동의
+              </Text>
+            </View>
+            <View style={{ marginTop: 10 }}>
+              <Text style={{ color: 'gray' }}>
+                귀하의 가입시 현 위치의 정확한 위치를 파악하여,
+              </Text>
+              <Text style={{ color: 'gray' }}>
+                다른 가입자들과의 거리를 나타내어 주기 위해서
+              </Text>
+              <Text style={{ color: 'gray' }}>
+                귀하의 위치를 사용하게 됨을 알려드립니다.
+              </Text>
+            </View>
+
+            <View style={{ marginTop: 10, gap: 5 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsVerifyLoocation(false)
+                  setVerify(true)
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  paddingVertical: 5,
+                  borderWidth: 1,
+                  borderColor: 'pink',
+                  borderRadius: 25,
+                  justifyContent: 'space-around',
+                  marginHorizontal: 2,
+                  paddingHorizontal: 20,
+                  marginTop: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: 'Se-Hwa',
+                    color: 'pink',
+                    fontSize: 30,
+                  }}
+                >
+                  동의합니다.
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsVerifyLoocation(false)
+                  setVerify(false)
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  paddingVertical: 5,
+                  backgroundColor: 'pink',
+                  borderRadius: 25,
+                  justifyContent: 'space-around',
+                  marginHorizontal: 2,
+                  paddingHorizontal: 20,
+                  marginTop: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: 'Se-Hwa',
+                    color: 'white',
+                    fontSize: 30,
+                  }}
+                >
+                  위치 사용에 동의하지 않습니다.
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   )
 }

@@ -386,7 +386,6 @@ const HomeScreen = () => {
                       },
                       shadowOpacity: 0.27,
                       shadowRadius: 4.65,
-
                       elevation: 10,
                     }}
                   >
@@ -1068,7 +1067,7 @@ const HomeScreen = () => {
                       style={{
                         fontFamily: 'Se-Hwa',
                         color: 'pink',
-                        fontSize: 30,
+                        fontSize: 35,
                       }}
                     >
                       확인
@@ -1093,7 +1092,7 @@ const HomeScreen = () => {
                       style={{
                         fontFamily: 'Se-Hwa',
                         color: 'white',
-                        fontSize: 30,
+                        fontSize: 35,
                       }}
                     >
                       취소

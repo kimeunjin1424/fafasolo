@@ -4,6 +4,6 @@
 
 //https://7653-106-101-2-18.ngrok-free.app
 
-//export const baseUrl = 'http://192.168.219.108:9000'
+//export const baseUrl = 'http://192.168.52.139:9000'
 
 export const baseUrl = 'https://soloaloneserver-c1cce2fd35a0.herokuapp.com'

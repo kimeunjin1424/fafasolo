@@ -6,6 +6,7 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -31,6 +32,7 @@ const PreFinalScreen = () => {
   const route = useRoute()
   const [userData, setUserData] = useState('')
   const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState(false)
 
   const { userId, token } = useSelector((state) => state.user)
 
@@ -100,6 +102,7 @@ const PreFinalScreen = () => {
   }
 
   const registerUser = async () => {
+    setIsLoading(true)
     try {
       await axios
         .post(`${baseUrl}/api/user/register`, userData)
@@ -119,6 +122,7 @@ const PreFinalScreen = () => {
       console.error('Error registering user:', error)
       throw error // Throw the error for handling in the component
     }
+    setIsLoading(false)
   }
 
   const fetchUserInfo = async () => {
@@ -244,16 +248,20 @@ const PreFinalScreen = () => {
         onPress={registerUser}
         style={{ backgroundColor: 'yellow', padding: 15, marginTop: 'auto' }}
       >
-        <Text
-          style={{
-            textAlign: 'center',
-            color: 'black',
-            fontSize: 30,
-            fontFamily: 'Se-Hwa',
-          }}
-        >
-          나혼자 솔로 시작하기
-        </Text>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="black" />
+        ) : (
+          <Text
+            style={{
+              textAlign: 'center',
+              color: 'black',
+              fontSize: 30,
+              fontFamily: 'Se-Hwa',
+            }}
+          >
+            나혼자 솔로 시작하기
+          </Text>
+        )}
       </Pressable>
     </SafeAreaView>
   )

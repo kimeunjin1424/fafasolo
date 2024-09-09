@@ -189,7 +189,7 @@ export const Tinder = () => {
           />
         ))}
       <View style={{ position: 'absolute', bottom: 30 }}>
-        <Pressable
+        {/* <Pressable
           onPress={() => setQuestionModal(true)}
           style={{
             flexDirection: 'row',
@@ -210,7 +210,7 @@ export const Tinder = () => {
           >
             {region} ,{decade}, Search(찾기)
           </Text>
-        </Pressable>
+        </Pressable> */}
       </View>
       <Modal
         visible={questionModal}

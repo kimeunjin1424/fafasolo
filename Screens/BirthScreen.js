@@ -18,7 +18,7 @@ import {
   saveRegistrationProgress,
 } from '../Utils/registrationUtils'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { WheelPicker } from 'react-native-infinite-wheel-picker'
 
 const BirthScreen = () => {
   const navigation = useNavigation()
@@ -32,11 +32,10 @@ const BirthScreen = () => {
   const [gender, setGender] = useState('')
   const [decade, setDecade] = useState('')
 
-  const decadeData = [
-    { id: 2, name: '20대' },
-    { id: 3, name: '30대' },
-    { id: 4, name: '40대' },
-    { id: 5, name: '50대' },
+  const initialData = [
+    20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+    39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
+    58, 59,
   ]
 
   const handleDayChange = (text) => {
@@ -70,6 +69,18 @@ const BirthScreen = () => {
   //   })
   // }, [])
 
+  useEffect(() => {
+    if (age > 19 && age < 30) {
+      setDecade('20대')
+    } else if (age >= 30 && age < 40) {
+      setDecade('30대')
+    } else if (age >= 40 && age < 50) {
+      setDecade('40대')
+    } else if (age >= 50 && age < 60) {
+      setDecade('50대')
+    }
+  }, [age])
+
   const handleNext = () => {
     const dateOfBirth = '07/07/7777'
     //saveRegistrationProgress('Birth', { '12/12/1212' })
@@ -78,6 +89,8 @@ const BirthScreen = () => {
 
     navigation.navigate('Location')
   }
+
+  console.log('age decade', age, decade)
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -115,7 +128,7 @@ const BirthScreen = () => {
             marginTop: 15,
           }}
         >
-          당신의 나이와 연령대를 입력해 주세요!!
+          당신의 나이를 입력해 주세요.
         </Text>
         <Text
           style={{
@@ -139,94 +152,33 @@ const BirthScreen = () => {
               fontSize: 20,
             }}
           >
-            -본인의 연령대를 클릭해 주세요!
+            -본인의 나이를 클릭해 주세요!
           </Text>
-        </View>
-
-        <ScrollView
-          horizontal={true}
-          style={{
-            marginTop: 20,
-            flexDirection: 'row',
-            alignSelf: 'center',
-            width: '95%',
-            paddingVertical: 4,
-          }}
-        >
-          {decadeData.map((i, index) => (
-            <TouchableOpacity
-              onPress={() => setDecade(i.name)}
-              key={index}
-              style={{
-                marginRight: 7,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                borderRadius: 25,
-                borderColor: decade == `${i.name}` ? 'white' : 'gray',
-                backgroundColor:
-                  decade == `${i.name}` ? '#3baea0' : 'transparent',
+          <View
+            style={{
+              backgroundColor: 'white',
+              marginTop: 20,
+              width: '80%',
+              alignContent: 'center',
+            }}
+          >
+            <WheelPicker
+              initialSelectedIndex={1}
+              data={initialData}
+              restElements={2}
+              elementHeight={30}
+              onChangeValue={(index, value) => {
+                setAge(value)
               }}
-            >
-              <Text
-                style={{
-                  fontSize: 25,
-                  fontFamily: 'Se-Hwa',
-                  color: decade == `${i.name}` ? 'white' : 'gray',
-                }}
-              >
-                {i.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-        <View>
-          <Text
-            style={{
-              color: 'gray',
-              marginLeft: 5,
-              fontFamily: 'Se-Hwa',
-              fontSize: 20,
-            }}
-          >
-            -본인의 나이를 입력해 주세요!
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            marginLeft: 10,
-          }}
-        >
-          <TextInput
-            style={{
-              borderBottomWidth: 1,
-              borderColor: 'black',
-              padding: 10,
-              width: 75,
-              fontSize: day ? 30 : 30,
-              fontFamily: 'Se-Hwa',
-            }}
-            placeholder="나이"
-            keyboardType="numeric"
-            maxLength={2}
-            onChangeText={(text) => setAge(text)}
-            value={age}
-          />
-          <Text
-            style={{
-              marginTop: 10,
-              marginLeft: -10,
-              fontFamily: 'Se-Hwa',
-              fontSize: 25,
-            }}
-          >
-            세
-          </Text>
+              age={age}
+              containerStyle={styles.containerStyle}
+              selectedLayoutStyle={styles.selectedLayoutStyle}
+              elementTextStyle={styles.elementTextStyle}
+            />
+          </View>
         </View>
 
-        {age && decade ? (
+        {age ? (
           <View style={{ marginTop: 30 }}>
             <View style={{ gap: 20 }}>
               <View style={{ flexDirection: 'row' }}>
@@ -234,8 +186,8 @@ const BirthScreen = () => {
                   style={{
                     paddingVertical: 5,
                     paddingHorizontal: 10,
-                    borderRadius: 25,
-                    backgroundColor: '#3baea0',
+                    borderRadius: 15,
+                    backgroundColor: 'lightgray',
                     width: 100,
                     marginRight: 5,
                   }}
@@ -255,38 +207,79 @@ const BirthScreen = () => {
                   style={{
                     paddingVertical: 5,
                     paddingHorizontal: 10,
-                    borderRadius: 25,
-                    backgroundColor: '#3baea0',
+                    borderRadius: 15,
+                    borderWidth: 1,
+                    borderColor: 'gray',
                     width: 100,
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 30,
-                      fontFamily: 'Se-Hwa',
-                      color: 'white',
-                      textAlign: 'center',
-                    }}
-                  >
-                    {decade}
-                  </Text>
+                  {age > 19 && age < 30 && (
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        fontFamily: 'Se-Hwa',
+                        color: 'gray',
+                        textAlign: 'center',
+                      }}
+                    >
+                      20대
+                    </Text>
+                  )}
+                  {age >= 30 && age < 40 && (
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        fontFamily: 'Se-Hwa',
+                        color: 'gray',
+                        textAlign: 'center',
+                      }}
+                    >
+                      30대
+                    </Text>
+                  )}
+                  {age >= 40 && age < 50 && (
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        fontFamily: 'Se-Hwa',
+                        color: 'gray',
+                        textAlign: 'center',
+                      }}
+                    >
+                      40대
+                    </Text>
+                  )}
+                  {age >= 50 && age < 60 && (
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        fontFamily: 'Se-Hwa',
+                        color: 'gray',
+                        textAlign: 'center',
+                      }}
+                    >
+                      50대
+                    </Text>
+                  )}
                 </View>
-                <TouchableOpacity
-                  onPress={handleNext}
-                  activeOpacity={0.8}
-                  style={{ marginTop: 1, marginLeft: 'auto' }}
-                >
-                  <MaterialCommunityIcons
-                    name="arrow-right-circle"
-                    size={45}
-                    color="#581845"
-                    style={{ alignSelf: 'center', marginTop: 20 }}
-                  />
-                </TouchableOpacity>
               </View>
             </View>
           </View>
         ) : null}
+        {age && decade && (
+          <TouchableOpacity
+            onPress={handleNext}
+            activeOpacity={0.8}
+            style={{ marginTop: 1, marginLeft: 'auto' }}
+          >
+            <MaterialCommunityIcons
+              name="arrow-right-circle"
+              size={45}
+              color="#581845"
+              style={{ alignSelf: 'center', marginTop: 20 }}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   )
@@ -294,7 +287,29 @@ const BirthScreen = () => {
 
 export default BirthScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 15,
+  },
+  selectedLayoutStyle: {
+    backgroundColor: '#00000026',
+    borderRadius: 15,
+  },
+  containerStyle: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: 15,
+    borderWidth: 1,
+  },
+  elementTextStyle: {
+    fontSize: 18,
+  },
+})
 
 // <View
 // style={{

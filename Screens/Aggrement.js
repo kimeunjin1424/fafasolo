@@ -40,7 +40,7 @@ const Aggrement = () => {
 
   return (
     <SafeAreaView>
-      <View style={{ padding: 10 }}>
+      <ScrollView style={{ padding: 10 }}>
         <View
           style={{
             borderWidth: 1,
@@ -57,7 +57,19 @@ const Aggrement = () => {
           </View>
           <View style={{ marginTop: 2 }}>
             <Text style={{ fontWeight: 700, fontSize: 15 }}>위치</Text>
-            <Text>이용자 간 거리 계산을 위한 권한</Text>
+            <Text>1. 회원가입의 '지역 페이지'에서 현재 위치사용</Text>
+            <Text style={{ textDecorationLine: 'underline', fontWeight: 900 }}>
+              -사용목적: 앱 가입자들간의 거리를 계산하기 위함
+            </Text>
+            <Text>2. '번개 페이지'에서 현재위치 사용</Text>
+            <Text style={{ textDecorationLine: 'underline', fontWeight: 900 }}>
+              -사용목적: 번개희망자의 현재 위치를 확인하기 위함.(가입시 위치와는
+              다름)
+            </Text>
+            <Text style={{ textDecorationLine: 'underline', fontWeight: 900 }}>
+              -사용목적: 번개신청자의 위치와 사용자의 현재위치사이의 거리 계산을
+              하기 위함
+            </Text>
           </View>
           <View style={{ marginTop: 2 }}>
             <Text style={{ fontWeight: 700, fontSize: 15 }}>저장공간</Text>
@@ -73,10 +85,6 @@ const Aggrement = () => {
               사용자 식별 및 이용중 문의사항 처리 및 패스워드 찾기등의 사항을
               처리하기 위한 권한
             </Text>
-          </View>
-          <View style={{ marginTop: 2 }}>
-            <Text style={{ fontWeight: 700, fontSize: 15 }}>전화번호</Text>
-            <Text>이용중 문의사항 처리를 위한 권한</Text>
           </View>
           <View style={{ marginTop: 2 }}>
             <Text style={{ fontWeight: 700, fontSize: 15 }}>나이</Text>
@@ -270,8 +278,9 @@ const Aggrement = () => {
                 promise3 === true &&
                 promise4 === true &&
                 promise5 === true &&
-                promise6 === true &&
-                'blue',
+                promise6 === true
+                  ? 'blue'
+                  : 'white',
             }}
             onPress={() => {
               setPromise1(true)
@@ -290,8 +299,9 @@ const Aggrement = () => {
                   promise3 === true &&
                   promise4 === true &&
                   promise5 === true &&
-                  promise6 === true &&
-                  'white',
+                  promise6 === true
+                    ? 'white'
+                    : 'black',
                 textAlign: 'center',
                 fontSize: 20,
               }}
@@ -301,27 +311,28 @@ const Aggrement = () => {
             </Text>
           </TouchableOpacity>
         </View>
-
-        {promise1 === true &&
-          promise2 === true &&
-          promise3 === true &&
-          promise4 === true &&
-          promise5 === true &&
-          promise6 === true && (
-            <TouchableOpacity
-              onPress={handleNext}
-              activeOpacity={0.8}
-              style={{ marginTop: 5, marginLeft: 'auto' }}
-            >
-              <MaterialCommunityIcons
-                name="arrow-right-circle"
-                size={45}
-                color="#581845"
-                style={{ alignSelf: 'center', marginTop: 5 }}
-              />
-            </TouchableOpacity>
-          )}
-      </View>
+        <View style={{ marginBottom: 100 }}>
+          {promise1 === true &&
+            promise2 === true &&
+            promise3 === true &&
+            promise4 === true &&
+            promise5 === true &&
+            promise6 === true && (
+              <TouchableOpacity
+                onPress={handleNext}
+                activeOpacity={0.8}
+                style={{ marginLeft: 'auto' }}
+              >
+                <MaterialCommunityIcons
+                  name="arrow-right-circle"
+                  size={45}
+                  color="#581845"
+                  style={{ alignSelf: 'center', marginTop: 5 }}
+                />
+              </TouchableOpacity>
+            )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

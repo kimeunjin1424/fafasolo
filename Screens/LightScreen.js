@@ -12,6 +12,7 @@ import {
   Platform,
   Modal,
   useWindowDimensions,
+  ActivityIndicator,
 } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import { FontAwesome6 } from '@expo/vector-icons'
@@ -34,7 +35,6 @@ import { baseUrl } from '../Utils/api'
 import axios from 'axios'
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
-import { useHeaderHeight } from '@react-navigation/elements'
 import * as Location from 'expo-location'
 
 const LightScreen = () => {
@@ -65,6 +65,9 @@ const LightScreen = () => {
   const [errorMsg, setErrorMsg] = useState(null)
   const [lightModal, setLightModal] = useState(false)
   const [createLightModal, setCreateLightModal] = useState(false)
+  const [verifyLocation, setIsVerifyLoocation] = useState(true)
+  const [verify, setVerify] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { userId, user: userInfo } = useSelector((state) => state.user)
 
@@ -73,18 +76,32 @@ const LightScreen = () => {
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    ;(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied')
-        return
-      }
-
-      let location = await Location.getCurrentPositionAsync({})
-      setLocation(location)
-      console.log('Light_location', location)
-    })()
+    setIsVerifyLoocation(true)
   }, [])
+
+  const fetchLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync()
+    if (status !== 'granted') {
+      setErrorMsg('Permission to access location was denied')
+      return
+    }
+
+    let location = await Location.getCurrentPositionAsync({})
+    setLocation(location)
+  }
+
+  // useEffect(() => {
+  //   ;(async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync()
+  //     if (status !== 'granted') {
+  //       setErrorMsg('Permission to access location was denied')
+  //       return
+  //     }
+
+  //     let location = await Location.getCurrentPositionAsync({})
+  //     setLocation(location)
+  //   })()
+  // }, [])
 
   const fetchLight = async () => {
     try {
@@ -228,10 +245,6 @@ const LightScreen = () => {
     return deg * (Math.PI / 180)
   }
 
-  const height = useHeaderHeight()
-
-  console.log('lightLength', light)
-
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 40 }}>
       <View style={{}}>
@@ -278,7 +291,7 @@ const LightScreen = () => {
           </View>
         </View>
       </View>
-      {location ? (
+      {location && verify == true ? (
         <KeyboardAwareScrollView>
           {light && light.length > 0 ? (
             light.map((i, index) => (
@@ -430,15 +443,20 @@ const LightScreen = () => {
           ) : (
             <View
               style={{
-                backgroundColor: 'gray',
-                marginTop: 100,
-                marginHorizontal:20,
-                padding:10,
-                borderRadius:15
+                marginTop: 200,
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+                backgroundColor: 'rgba(255,255,255,0.5)',
+                paddingVertical: 10,
+                borderRadius: 15,
               }}
             >
-              <Text style={{ fontSize:25, color: 'red' }}>
-                해당 지역 번개가 없습니다. 번개를 신청해 보세요.
+              <Text style={{ fontSize: 18, color: 'black' }}>
+                해당 지역의 번개 신청자가 없습니다.
+              </Text>
+              <Text style={{ fontSize: 18, color: 'black' }}>
+                번개를 신청해 보세요.
               </Text>
             </View>
           )}
@@ -451,6 +469,7 @@ const LightScreen = () => {
             alignItems: 'center',
           }}
         >
+          <ActivityIndicator size="large" color="red" />
           <Text style={{ textAlign: 'center' }}>위치가 확인되지 않습니다.</Text>
           <Text style={{ color: 'red' }}>10초만 기다려 주세요.</Text>
           <Text>10초후에도 위치가 확인되지 않으면</Text>
@@ -458,6 +477,20 @@ const LightScreen = () => {
             Settings - 나혼자 솔로 - Toggle - Location Permission
           </Text>
           <Text>위치허용을 부탁드립니다. </Text>
+          <TouchableOpacity
+            style={{
+              marginTop: 30,
+              borderRadius: 15,
+              backgroundColor: 'gray',
+              padding: 5,
+              paddingVertical: 7,
+            }}
+            onPress={() => setIsVerifyLoocation(true)}
+          >
+            <Text style={{ color: 'white', fontSize: 35 }}>
+              위치사용 정보 동의하기
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -588,7 +621,7 @@ const LightScreen = () => {
                 <TextInput
                   style={{
                     fontFamily: 'Se-Hwa',
-                    fontSize: 20,
+                    fontSize: 25,
                     paddingVertical: 3,
                   }}
                   //value={meetingLocation}
@@ -599,20 +632,23 @@ const LightScreen = () => {
               <TouchableOpacity
                 onPress={createLight}
                 style={{
-                  borderWidth: 1,
-                  borderRadius: 25,
+                  flexDirection: 'row',
+                  alignSelf: 'center',
                   paddingVertical: 5,
-                  borderColor: 'yellow',
-                  marginTop: 20,
+                  width: width * 0.7,
+                  backgroundColor: 'yellow',
+                  borderRadius: 25,
+                  justifyContent: 'space-around',
                   marginHorizontal: 2,
                   paddingHorizontal: 20,
-                  backgroundColor: 'yellow',
+                  marginTop: 30,
+                  paddingVertical: 7,
                 }}
               >
                 <Text
                   style={{
                     fontFamily: 'Se-Hwa',
-                    fontSize: 25,
+                    fontSize: 35,
                     textAlign: 'center',
                     color: 'gray',
                   }}
@@ -636,16 +672,142 @@ const LightScreen = () => {
                   paddingHorizontal: 20,
                   marginTop: 10,
                   marginBottom: 100,
+                  paddingVertical: 7,
                 }}
               >
                 <Text
                   style={{
                     fontFamily: 'Se-Hwa',
                     color: 'white',
-                    fontSize: 25,
+                    fontSize: 35,
                   }}
                 >
                   닫기
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        visible={verifyLocation}
+        onTouchOutside={() => {
+          setIsVerifyLoocation(false)
+        }}
+        animationType="fade"
+        transparent={true}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 22,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: 'white',
+              margin: 10,
+              borderRadius: 20,
+              padding: 15,
+              alignItems: 'center',
+              shadowColor: 'white',
+              shadowOffset: {
+                width: 0,
+                height: 5,
+              },
+              shadowOpacity: 0.55,
+              shadowRadius: 4,
+              elevation: 5,
+            }}
+          >
+            <View style={{ borderBottomWidth: 1, borderColor: 'gray' }}>
+              <Text
+                style={{
+                  marginTop: 5,
+                  fontSize: 25,
+                  color: 'black',
+                  fontFamily: 'Se-Hwa',
+                }}
+              >
+                위치 사용 관련 안내 및 동의
+              </Text>
+            </View>
+            <View style={{ marginTop: 10 }}>
+              <Text style={{ color: 'gray' }}>
+                위치 사용 관련하여 한번 더 동의를 구하는 이유는
+              </Text>
+              <Text style={{ color: 'gray' }}>
+                번개 코너에서는 가입시 위치와 상관없이
+              </Text>
+              <Text style={{ color: 'gray' }}>
+                현재 위치에서의 번개 신청자와
+              </Text>
+              <Text style={{ color: 'gray' }}>
+                번개 코너 사용자간의 거리를 나타내어 주기 위해서
+              </Text>
+              <Text style={{ color: 'gray' }}>
+                귀하의 위치를 사용함에 있어서
+              </Text>
+              <Text style={{ color: 'gray' }}>동의를 구하기 위함 입니다.</Text>
+            </View>
+
+            <View style={{ marginTop: 10, gap: 5 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  fetchLocation()
+                  setIsVerifyLoocation(false)
+                  setVerify(true)
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  paddingVertical: 5,
+                  borderWidth: 1,
+                  borderColor: 'pink',
+                  borderRadius: 25,
+                  justifyContent: 'space-around',
+                  marginHorizontal: 2,
+                  paddingHorizontal: 20,
+                  marginTop: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: 'Se-Hwa',
+                    color: 'pink',
+                    fontSize: 35,
+                  }}
+                >
+                  동의합니다.
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsVerifyLoocation(false)
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  paddingVertical: 5,
+                  backgroundColor: 'pink',
+                  borderRadius: 25,
+                  justifyContent: 'space-around',
+                  marginHorizontal: 2,
+                  paddingHorizontal: 20,
+                  marginTop: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: 'Se-Hwa',
+                    color: 'white',
+                    fontSize: 35,
+                  }}
+                >
+                  동의하지 않습니다.
                 </Text>
               </TouchableOpacity>
             </View>
